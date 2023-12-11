@@ -55,27 +55,30 @@ public class Calculator {
                 90, "XC",
                 100, "C"
         );
-        StringBuilder romanian = new StringBuilder();
-        int multiplier = 1;
-        while (i > 0) {
-            int digit = i % 10;
-            String value = map.get(digit * multiplier);
-            if (value == null) {
-                if (digit >= 5) {
-                    value = map.get(5 * multiplier) + map.get(multiplier).repeat(digit - 5);
-                } else {
-                    value = map.get(multiplier).repeat(digit);
+        if (i > 0) {
+            StringBuilder romanian = new StringBuilder();
+            int multiplier = 1;
+            while (i > 0) {
+                int digit = i % 10;
+                String value = map.get(digit * multiplier);
+                if (value == null) {
+                    if (digit >= 5) {
+                        value = map.get(5 * multiplier) + map.get(multiplier).repeat(digit - 5);
+                    } else {
+                        value = map.get(multiplier).repeat(digit);
+                    }
                 }
+                romanian.insert(0, value);
+                i = i / 10;
+                multiplier *= 10;
             }
-            romanian.insert(0, value);
-            i = i / 10;
-            multiplier *= 10;
+            return romanian.toString();
         }
-        return romanian.toString();
+        throw new IllegalArgumentException("Римское число не может быть отрицательным");
     }
 
     private static boolean checkToDiapazon(int value1, int value2) {
-        return value1 >= 0 && value1 <= 10 && value2 >= 0 && value2 <= 10;
+        return value1 > 0 && value1 <= 10 && value2 > 0 && value2 <= 10;
     }
 
     private static String calc(String input) {
@@ -93,6 +96,7 @@ public class Calculator {
             value1 = Integer.parseInt(parts[0]);
             value2 = Integer.parseInt(parts[2]);
         }
+        if (checkToDiapazon(value1,value2)){
         switch (operator) {
             case "+":
                 res = value1 + value2;
@@ -120,6 +124,8 @@ public class Calculator {
             return toRomanian(res);
         }
         return String.valueOf(res);
+        }
+        throw new IllegalArgumentException("Введено число меньше 1 или больше 10");
     }
 
     private static boolean isRomanNumeral(String str) {
